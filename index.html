@@ -47,7 +47,7 @@
             <h3 class="title">Personalizar</h3>
             <div class="actions">
                 <div class="password-length">
-                    <p>Tamanho: <span id="password-length-text"></span></p>
+                    <p>Tamanho: <span id="password-length-text">16</span></p>
                     <input type="range" class="slider" name="password-length" id="password-length" value=16 min="4", max="64" /> 
                 </div>
 
@@ -60,7 +60,7 @@
 
                     <label class="checkbox-container">
                         <span>Simbolos</span>
-                        <input type="checkbox" id="Simbolos" checked/>
+                        <input type="checkbox" id="simbolos" checked/>
                         <span class="checkmark"></span>
                     </label>
 
@@ -75,36 +75,99 @@
        
        
        
-
-        <button id="copy1">copiar senha</button>
+        <div class="submit">
+            <button id="copy1">copiar senha</button>
+        </div>
+       
     </main>
 
 
 
     <script>
+     
         const input_element = document.querySelector("#password")
-       
+        const maiusculascheck = document.querySelector("#uppercase")
+        const simboloscheck = document.querySelector("#simbolos")
+        const numeroscheck = document.querySelector("#number")
+        const secutityBarEL = document.querySelector("#security-indicator-bar")
+
+
         tamanho_senha = 16;
+
         function gerar_senha(){
 
+            let char = "abcdefghijklmnopqrstuvwxyz"
 
-            const char = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJMNOPQRSTUVWXYZ1234567890!@#$%¨&*(){}[]"
+            const uppercase = "ABCDEFGHIJMNOPQRSTUVWXYZ"
+            const simbolos = "!@#$%¨&*(){}[]"
+            const number = "1234567890"
+
+            if(maiusculascheck.checked){
+               char += uppercase;
+         
+            }
+            
+            if(simboloscheck.checked){
+                char += simbolos;
+                
+            }
+            
+            if(numeroscheck.checked){
+                char += number;
+            
+            }
+           
 
             let password = "";
-
-
             for(let i=0; i < tamanho_senha; i++){
                 const randon = Math.floor(Math.random() * char.length);  //Math.random() gera um numero de 0 a 1
+                
                 password += char.substring(randon, randon + 1);
             }
 
-     
-         
-
+    
             input_element.value = password
+
+            qualitycalc();
 
             //console.log(password)
         }
+        
+        const password_length = document.querySelector("#password-length");
+
+        function qualitycalc(){
+            const percent = Math.round((password_length.value / 64)  * 25 + 
+                            (maiusculascheck.checked ? 15 : 0) + 
+                            (simboloscheck.checked ? 25 : 0) + 
+                            (numeroscheck.checked ? 35 : 0)
+                            );
+
+            
+
+            secutityBarEL.style.width = `${percent}%`
+
+            if(percent > 69){
+                secutityBarEL.classList.remove("critical")
+                secutityBarEL.classList.remove("warning")
+                secutityBarEL.classList.add("safe")
+            }else if(percent > 40){
+                secutityBarEL.classList.remove("critical")
+                secutityBarEL.classList.remove("safe")
+                secutityBarEL.classList.add("warning")
+            }else{
+                secutityBarEL.classList.remove("safe")
+                secutityBarEL.classList.remove("warning")
+                secutityBarEL.classList.add("critical")
+            }
+
+
+            if(percent >= 100){
+                secutityBarEL.classList.add("completed")
+            }else{
+                secutityBarEL.classList.remove("completed")
+            }
+        }
+
 
         function copy(){ // copiar senha
             navigator.clipboard.writeText(input_element.value);
@@ -112,16 +175,22 @@
 
         document.querySelector("#copy1").addEventListener('click', copy);
         document.querySelector("#copy2").addEventListener('click', copy);
+        maiusculascheck.addEventListener('click', gerar_senha)
+        simboloscheck.addEventListener('click', gerar_senha)
+        numeroscheck.addEventListener('click', gerar_senha)
 
-        const password_length = document.querySelector("#password-length");
+
+        
 
         password_length.addEventListener("input",  function() {
              tamanho_senha = password_length.value;
+             document.querySelector("#password-length-text").textContent = tamanho_senha
              gerar_senha();
         })
 
         
         gerar_senha();
+
     </script>
     
 </body>
