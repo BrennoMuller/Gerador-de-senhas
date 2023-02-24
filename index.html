@@ -127,8 +127,9 @@
 
     
             input_element.value = password
-
+           
             qualitycalc();
+            fontsize();
 
             //console.log(password)
         }
@@ -169,12 +170,39 @@
         }
 
 
+        function fontsize(){
+      
+            if(password_length.value > 45){
+              
+                input_element.classList.remove("font-sm")
+                input_element.classList.remove("font-xs")
+                input_element.classList.add("font-xxs")
+                
+            }else if(password_length.value > 32){
+
+                input_element.classList.remove("font-xxs")
+                input_element.classList.remove("font-sm")
+                input_element.classList.add("font-xs")
+                
+            }else if( password_length.value > 22){
+                input_element.classList.remove("font-xs")
+                input_element.classList.remove("font-xxs")
+                input_element.classList.add("font-sm")               
+            }else{
+                input_element.classList.remove("font-sm")
+                input_element.classList.remove("font-xs")
+                input_element.classList.remove("font-xxs")
+            }
+        }
+
+
         function copy(){ // copiar senha
             navigator.clipboard.writeText(input_element.value);
         }
 
         document.querySelector("#copy1").addEventListener('click', copy);
         document.querySelector("#copy2").addEventListener('click', copy);
+        document.querySelector("#renew").addEventListener('click', gerar_senha);
         maiusculascheck.addEventListener('click', gerar_senha)
         simboloscheck.addEventListener('click', gerar_senha)
         numeroscheck.addEventListener('click', gerar_senha)
